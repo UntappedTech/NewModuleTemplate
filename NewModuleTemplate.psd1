@@ -18,6 +18,7 @@
         'New-AnalyzerSettings',
         'New-BuildScript',
         'New-DocumentationScripts',
+        'New-ModuleChangelog',
         'New-ModuleFolders',
         'New-ModuleManifestFile',
         'New-ModuleReadme',
