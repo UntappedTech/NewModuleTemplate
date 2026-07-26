@@ -1,11 +1,20 @@
 function New-ModuleFolders {
-    param([string]$Name)
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string]$Name,
 
-    $base = Join-Path (Get-Location) $Name
+        [Parameter(Mandatory)]
+        [string]$Path
+    )
+
+    # Base module path: <Path>\<Name>
+    $base = Join-Path $Path $Name
     New-Item -ItemType Directory -Path $base -Force | Out-Null
 
-    foreach ($folder in 'Public', 'Private', 'Tests', 'Docs', 'Scripts', 'Analyzer') {
-        New-Item -ItemType Directory -Path "$base\$folder" -Force | Out-Null
+    # Standard module folder structure
+    foreach ($folder in 'Public', 'Private', 'Tests', 'Docs', 'Analyzer') {
+        New-Item -ItemType Directory -Path (Join-Path $base $folder) -Force | Out-Null
     }
 
     return $base

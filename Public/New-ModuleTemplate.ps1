@@ -35,6 +35,9 @@ function New-ModuleTemplate {
         [Parameter(ParameterSetName = "GUI")]
         [string]$Name,
 
+        [Parameter(Mandatory)]
+        [string]$Path,
+
         [Parameter(ParameterSetName = "GUI", Mandatory = $true)]
         [switch]$UseGui,
 
@@ -42,19 +45,21 @@ function New-ModuleTemplate {
     )
 
     if ($UseGui) {
-        $Name = Show-GuiPrompt -Prepopulate $Name
+        $Name = Show-GuiPrompt -Prepopulate $Name -Path $Path
         if (-not $Name) { return }
     }
 
-    $base = New-ModuleFolders -Name $Name
-    New-ModuleManifestFile -Name $Name -BasePath $base
-    New-PesterTests -Name $Name -BasePath $base
-    New-AnalyzerSettings -BasePath $base
-    New-DocumentationScripts -Name $Name -BasePath $base
-    New-BuildScript -BasePath $base -Name $Name
-    New-PublishScript -BasePath $base -Name $Name
-    New-ModuleReadme -BasePath $base -ModuleName $Name
+    # Create folder structure
+    $base = New-ModuleFolders -Name $Name -Path $Path
 
+    # Generate module components
+    New-ModuleManifestFile     -Name $Name -BasePath $base
+    New-PesterTests            -Name $Name -BasePath $base
+    New-AnalyzerSettings       -BasePath $base
+    New-DocumentationScripts   -Name $Name -BasePath $base
+    New-BuildScript            -BasePath $base -Name $Name
+    New-PublishScript          -BasePath $base -Name $Name
+    New-ModuleReadme           -BasePath $base -ModuleName $Name
 
     if ($InitGit) {
         Initialize-GitRepository -BasePath $base

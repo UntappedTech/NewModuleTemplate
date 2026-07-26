@@ -22,7 +22,10 @@ Docs/*.xml
 
     Set-Content -Path "$BasePath\.gitignore" -Value $gitignore
 
-    git init $BasePath | Out-Null
+    Push-Location $BasePath
+    git init | Out-Null
+    Pop-Location
+
     git -C $BasePath add . | Out-Null
     git -C $BasePath commit -m "Initial commit" | Out-Null
 }

@@ -6,6 +6,6 @@ Describe "New-AnalyzerSettings" {
 
         New-AnalyzerSettings -Name "TestModule" -Path $temp
 
-        Test-Path "$temp\TestModule\AnalyzerSettings\Settings.psd1" | Should Be $true
+        Test-Path "$temp\TestModule\Analyzer\PSScriptAnalyzerSettings.psd1" | Should Be $true
     }
 }

@@ -6,6 +6,6 @@ Describe "New-DocumentationScripts" {
 
         New-DocumentationScripts -Name "TestModule" -Path $temp
 
-        Test-Path "$temp\TestModule\Docs\New-Help.ps1" | Should Be $true
+        Test-Path "$temp\TestModule\Scripts\Update-ModuleDocumentation.ps1" | Should Be $true
     }
 }
