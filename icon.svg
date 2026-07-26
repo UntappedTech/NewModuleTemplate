@@ -1,0 +1,20 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+      <rect width="256" height="256" rx="24" fill="#012456" />
+      <g fill="none" stroke="#FFF" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Left curly brace -->
+            <path
+                  d="M 57 56 C 45 56 41 62 41 74 L 41 110 C 41 120 33 128 25 128 C 33 128 41 136 41 146 L 41 182 C 41 194 45 200 57 200" />
+            <!-- Chevron -->
+            <path d="M70 80 L135 128 L70 176" />
+            <!-- Plus -->
+            <g stroke-width="12">
+                  <!-- Horizontal line -->
+                  <line x1="155" y1="128" x2="195" y2="128" />
+                  <!-- Vertical line -->
+                  <line x1="175" y1="108" x2="175" y2="148" />
+            </g>
+            <!-- Right curly brace -->
+            <path
+                  d="M 197 56 C 209 56 213 62 213 74 L 213 110 C 213 120 221 128 229 128 C 221 128 213 136 213 146 L 213 182 C 213 194 209 200 197 200" />
+      </g>
+</svg>

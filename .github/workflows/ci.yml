@@ -1,0 +1,26 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    test:
+        runs-on: windows-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup PowerShell
+              uses: PowerShell/PowerShell-For-GitHub-Actions@v2
+
+            - name: Install dependencies
+              run: |
+                  pwsh -Command "Install-Module Pester -Scope CurrentUser -Force"
+                  pwsh -Command "Install-Module PlatyPS -Scope CurrentUser -Force"
+                  pwsh -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force"
+
+            - name: Run build
+              run: pwsh ./build.ps1
