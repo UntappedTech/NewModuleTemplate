@@ -53,13 +53,15 @@ function New-ModuleTemplate {
     $base = New-ModuleFolders -Name $Name -Path $Path
 
     # Generate module components
-    New-ModuleManifestFile     -Name $Name -BasePath $base
-    New-PesterTests            -Name $Name -BasePath $base
+    New-ModuleManifestFile     -BasePath $base -Name $Name 
+    New-ModulePsm1             -BasePath $base -Name $Name
+    New-PesterTests            -BasePath $base -Name $Name 
     New-AnalyzerSettings       -BasePath $base
-    New-DocumentationScripts   -Name $Name -BasePath $base
-    New-BuildScript            -BasePath $base -Name $Name
-    New-PublishScript          -BasePath $base -Name $Name
-    New-ModuleReadme           -BasePath $base -ModuleName $Name
+    New-ModuleChangelog        -BasePath $base
+    New-DocumentationScripts   -BasePath $base -Name $Name 
+    New-BuildScript            -BasePath $base -Name $Name 
+    New-PublishScript          -BasePath $base -Name $Name 
+    New-ModuleReadme           -BasePath $base -Name $Name
 
     if ($InitGit) {
         Initialize-GitRepository -BasePath $base

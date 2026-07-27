@@ -4,8 +4,8 @@ function New-ModuleChangelog {
         [Parameter(Mandatory)]
         [string]$Path,
 
-        [Parameter(Mandatory)]
-        [string]$Version,
+        [Parameter()]
+        [string]$Version = "1.0.0",
 
         [Parameter()]
         [string]$Notes = "Initial release."

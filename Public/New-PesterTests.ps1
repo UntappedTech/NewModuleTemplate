@@ -5,11 +5,11 @@ function New-PesterTests {
     )
 
     $test = @'
-BeforeAll {
-    Import-Module "$PSScriptRoot/../__MODULE__.psd1" -Force
-}
-
 Describe "__MODULE__ Module" {
+
+    BeforeAll {
+        Import-Module "$PSScriptRoot/../__MODULE__.psd1" -Force
+    }
 
     It "Loads without error" {
         { Import-Module "__MODULE__" -Force } | Should -Not -Throw

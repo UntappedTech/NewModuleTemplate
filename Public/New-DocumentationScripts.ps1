@@ -1,17 +1,17 @@
 function New-DocumentationScripts {
     param(
-        [string]$Name,
-        [string]$BasePath
+        [string]$BasePath,
+        [string]$Name
     )
 
     $content = @'
 Import-Module PlatyPS
 
-Update-MarkdownHelp -Module "__MODULE_PATH__" -OutputFolder "__DOCS_PATH__" -Force
+Update-MarkdownHelp -Module "$PSScriptRoot\..\__MODULE_NAME__.psd1" -OutputFolder "$PSScriptRoot\Docs" -Force
 '@
 
-    $content = $content.Replace('__MODULE_PATH__', "$BasePath\$Name.psd1")
-    $content = $content.Replace('__DOCS_PATH__', "$BasePath\Docs")
+    $content = $content.Replace('__MODULE_NAME__', "$Name")
+    # $content = $content.Replace('__DOCS_PATH__', "$BasePath\Docs")
 
     Set-Content -Path "$BasePath\Scripts\Update-ModuleDocumentation.ps1" -Value $content
 }

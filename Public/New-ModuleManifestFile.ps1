@@ -12,7 +12,7 @@ function New-ModuleManifestFile {
         -Author $env:USERNAME `
         -Description "$Name module" `
         -Guid $guid `
-        -FunctionsToExport @('ExampleFunction') `
+        -FunctionsToExport @() `
         -AliasesToExport @() `
         -CompatiblePSEditions @('Core', 'Desktop') `
         -PowerShellVersion '5.1' `

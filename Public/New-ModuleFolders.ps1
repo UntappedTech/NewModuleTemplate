@@ -13,7 +13,7 @@ function New-ModuleFolders {
     New-Item -ItemType Directory -Path $base -Force | Out-Null
 
     # Standard module folder structure
-    foreach ($folder in 'Public', 'Private', 'Tests', 'Docs', 'Analyzer') {
+    foreach ($folder in 'Public', 'Private', 'Tests', 'Docs', 'Analyzer', 'Scripts') {
         New-Item -ItemType Directory -Path (Join-Path $base $folder) -Force | Out-Null
     }
 
