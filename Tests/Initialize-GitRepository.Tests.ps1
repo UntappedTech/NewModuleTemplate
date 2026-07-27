@@ -4,7 +4,7 @@ Describe "Initialize-GitRepository" {
         $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
         New-Item -ItemType Directory -Path $temp | Out-Null
 
-        Initialize-GitRepository -Path $temp
+        Initialize-GitRepository -BasePath $temp
 
         Test-Path "$temp\.git" | Should Be $true
     }

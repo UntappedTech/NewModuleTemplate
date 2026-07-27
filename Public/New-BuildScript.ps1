@@ -3,7 +3,29 @@
     Creates a build.ps1 script inside the generated module.
 
 .DESCRIPTION
-    The build script runs PSScriptAnalyzer, Pester tests, and updates PlatyPS documentation.
+    Generates a build script that performs common module maintenance tasks:
+    - Runs PSScriptAnalyzer using the module's analyzer settings
+    - Executes Pester tests
+    - Regenerates PlatyPS documentation
+    The script supports switches to skip individual steps.
+
+.PARAMETER BasePath
+    The root directory of the module where the Scripts folder will be created.
+
+.PARAMETER Name
+    The name of the module. Used to reference the module manifest and display
+    status messages inside the generated build script.
+
+.EXAMPLE
+    New-BuildScript -BasePath "C:\Projects\MyModule" -Name "MyModule"
+
+.EXAMPLE
+    $root = Join-Path $env:TEMP "TestModule"
+    New-BuildScript -BasePath $root -Name "TestModule"
+
+.NOTES
+    - The Analyzer folder is intentionally named "Analyzer".
+    - This script is automatically invoked by New-ModuleTemplate.
 #>
 function New-BuildScript {
     [CmdletBinding()]
@@ -15,6 +37,13 @@ function New-BuildScript {
         [string]$Name
     )
 
+    # Ensure the Scripts directory exists
+    $scriptsDir = Join-Path $BasePath 'Scripts'
+    if (-not (Test-Path $scriptsDir)) {
+        New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null
+    }
+
+    # Template for the build script
     $content = @'
 param(
     [switch]$SkipTests,
@@ -43,7 +72,10 @@ if (-not $SkipDocs) {
 Write-Host "Build complete."
 '@
 
+    # Replace placeholder with module name
     $content = $content.Replace('__MODULE__', $Name)
 
-    Set-Content -Path "$BasePath\Scripts\build.ps1" -Value $content
+    # Write the build script
+    $buildScriptPath = Join-Path $scriptsDir 'build.ps1'
+    Set-Content -Path $buildScriptPath -Value $content -Encoding UTF8 -Force
 }

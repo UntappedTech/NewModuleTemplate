@@ -20,6 +20,7 @@
         'New-DocumentationScripts',
         'New-ModuleChangelog',
         'New-ModuleFolders',
+        'New-ModuleLoader',
         'New-ModuleManifestFile',
         'New-ModuleReadme',
         'New-ModuleTemplate',

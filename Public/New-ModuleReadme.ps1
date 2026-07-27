@@ -3,9 +3,34 @@
     Creates a rich README.md inside the generated module.
 
 .DESCRIPTION
-    Generates a professional README including badges, metadata,
-    documentation links, usage examples, and module structure.
-    Only uses $Name and $env:USERNAME—no additional inputs required.
+    Generates a professional README containing:
+    - PowerShell Gallery badges
+    - Module metadata
+    - Documentation references
+    - Installation instructions
+    - Usage examples
+    - Folder structure overview
+    - Build and publish script references
+    The README is designed to be immediately useful for developers and users
+    of the generated module.
+
+.PARAMETER BasePath
+    The root directory of the module where README.md will be created.
+
+.PARAMETER Name
+    The name of the module. Used to populate placeholders inside the README.
+
+.EXAMPLE
+    New-ModuleReadme -BasePath "C:\Projects\MyModule" -Name "MyModule"
+
+.EXAMPLE
+    $root = Join-Path $env:TEMP "TestModule"
+    New-ModuleReadme -BasePath $root -Name "TestModule"
+
+.NOTES
+    - The here-string is intentionally single-quoted.
+    - No escaping or interpolation occurs inside the here-string.
+    - Placeholders (__MODULE_NAME__, __AUTHOR__) are replaced afterward.
 #>
 function New-ModuleReadme {
     [CmdletBinding()]
@@ -17,6 +42,7 @@ function New-ModuleReadme {
         [string]$Name
     )
 
+    # Template for README.md
     $content = @'
 # __MODULE_NAME__
 

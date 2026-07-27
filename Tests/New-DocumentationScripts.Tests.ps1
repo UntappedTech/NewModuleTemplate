@@ -1,11 +1,11 @@
 Describe "New-DocumentationScripts" {
 
     It "Creates documentation scripts" {
-        $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
+        $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString()) "TestModule"
         New-Item -ItemType Directory -Path $temp | Out-Null
 
-        New-DocumentationScripts -Name "TestModule" -Path $temp
+        New-DocumentationScripts -Name "TestModule" -BasePath $temp
 
-        Test-Path "$temp\TestModule\Scripts\Update-ModuleDocumentation.ps1" | Should Be $true
+        Test-Path "$temp\Scripts\Update-ModuleDocumentation.ps1" | Should Be $true
     }
 }
