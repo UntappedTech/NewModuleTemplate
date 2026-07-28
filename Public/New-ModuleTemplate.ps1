@@ -85,5 +85,5 @@ function New-ModuleTemplate {
         Initialize-GitRepository -BasePath $base
     }
 
-    Write-Host "Module '$Name' created at $base"
+    Write-Information "Module '$Name' created at $base"
 }

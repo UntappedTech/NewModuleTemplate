@@ -40,11 +40,22 @@ function New-AnalyzerSettings {
     # Default analyzer configuration
     $content = @'
 @{
-    Severity = @{
-        PSAvoidUsingWriteHost = 'Warning'
-        PSProvideCommentHelp  = 'Information'
+    Rules = @{
+        PSAvoidUsingWriteHost = @{
+            Severity = 'Warning'
+        }
+        PSUseDeclaredVarsMoreThanAssignments = @{
+            Severity = 'Warning'
+        }
+        PSUseCorrectCasing = @{
+            Severity = 'Warning'
+        }
+        PSProvideCommentHelp = @{
+            Severity = 'Information'
+        }
     }
 }
+
 '@
 
     # Write the settings file

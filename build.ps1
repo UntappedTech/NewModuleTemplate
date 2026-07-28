@@ -4,22 +4,22 @@ param(
     [switch]$SkipDocs
 )
 
-Write-Host "Building NewModuleTemplate..."
+Write-Information "Building NewModuleTemplate..."
 
 if (-not $SkipAnalyzer) {
-    Write-Host "Running PSScriptAnalyzer..."
+    Write-Information "Running PSScriptAnalyzer..."
     Invoke-ScriptAnalyzer -Path $PSScriptRoot -Settings "$PSScriptRoot\Analyzer\PSScriptAnalyzerSettings.psd1"
 }
 
 if (-not $SkipTests) {
-    Write-Host "Running Pester tests..."
+    Write-Information "Running Pester tests..."
     Invoke-Pester -Path "$PSScriptRoot\Tests" -EnableExit
 }
 
 if (-not $SkipDocs) {
-    Write-Host "Updating PlatyPS docs..."
+    Write-Information "Updating PlatyPS docs..."
     Import-Module PlatyPS -ErrorAction Stop
     New-MarkdownHelp -Module "$PSScriptRoot\NewModuleTemplate.psd1" -OutputFolder "$PSScriptRoot\Docs" -Force
 }
 
-Write-Host "Build complete."
+Write-Information "Build complete."
