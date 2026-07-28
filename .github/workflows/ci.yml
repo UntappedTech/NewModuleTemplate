@@ -13,14 +13,13 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Setup PowerShell
-              uses: actions/setup-powershell@v1
-
             - name: Install dependencies
+              shell: pwsh
               run: |
                   pwsh -Command "Install-Module Pester -Scope CurrentUser -Force"
                   pwsh -Command "Install-Module PlatyPS -Scope CurrentUser -Force"
                   pwsh -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force"
 
             - name: Run build
+              shell: pwsh
               run: pwsh ./build.ps1
