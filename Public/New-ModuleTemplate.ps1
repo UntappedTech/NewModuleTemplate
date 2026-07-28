@@ -41,16 +41,22 @@
 function New-ModuleTemplate {
     [CmdletBinding(DefaultParameterSetName = "CLI")]
     param(
-        [Parameter(Mandatory)]
+        # Path belongs to BOTH parameter sets
+        [Parameter(ParameterSetName = "CLI", Mandatory = $true)]
+        [Parameter(ParameterSetName = "GUI", Mandatory = $true)]
         [string]$Path,
 
+        # Name belongs ONLY to CLI
         [Parameter(ParameterSetName = "CLI", Mandatory = $true)]
-        [Parameter(ParameterSetName = "GUI")]
         [string]$Name,
 
+        # UseGui belongs ONLY to GUI
         [Parameter(ParameterSetName = "GUI", Mandatory = $true)]
         [switch]$UseGui,
 
+        # InitGit belongs to BOTH sets
+        [Parameter(ParameterSetName = "CLI")]
+        [Parameter(ParameterSetName = "GUI")]
         [switch]$InitGit
     )
 

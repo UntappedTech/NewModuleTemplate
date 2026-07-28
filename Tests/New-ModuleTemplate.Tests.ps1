@@ -4,7 +4,7 @@ Describe "New-ModuleTemplate" {
         $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
         New-Item -ItemType Directory -Path $temp | Out-Null
 
-        New-ModuleTemplate -Name "TestModule" -Path $temp
+        New-ModuleTemplate -Path $temp -Name "TestModule"
 
         $expected = @(
             "$temp\TestModule\Public",
