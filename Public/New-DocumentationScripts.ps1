@@ -8,7 +8,7 @@
     using the module's manifest and Docs folder. This allows developers to
     regenerate documentation after modifying public functions.
 
-.PARAMETER BasePath
+.PARAMETER ModulePath
     The root directory of the module where the Scripts folder will be created.
 
 .PARAMETER Name
@@ -16,11 +16,11 @@
     generated documentation update script.
 
 .EXAMPLE
-    New-DocumentationScripts -BasePath "C:\Projects\MyModule" -Name "MyModule"
+    New-DocumentationScripts -ModulePath "C:\Projects\MyModule" -Name "MyModule"
 
 .EXAMPLE
     $root = Join-Path $env:TEMP "TestModule"
-    New-DocumentationScripts -BasePath $root -Name "TestModule"
+    New-DocumentationScripts -ModulePath $root -Name "TestModule"
 
 .NOTES
     - The generated script is named Update-ModuleDocumentation.ps1.
@@ -30,23 +30,26 @@ function New-DocumentationScripts {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [string]$BasePath,
+        [string]$ModulePath,
 
         [Parameter(Mandatory)]
         [string]$Name
     )
 
-    # Ensure the Scripts directory exists
-    $scriptsDir = Join-Path $BasePath 'Scripts'
-    if (-not (Test-Path $scriptsDir)) {
-        New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null
-    }
+    Write-Verbose "Creating documentation update script for module '$Name'."
+
+    # Ensure Scripts directory exists
+    $scriptsDir = Join-Path $ModulePath 'Scripts'
+    Ensure-Directory -Path $scriptsDir -Name 'Scripts'
 
     # Template for the documentation update script
     $content = @'
-Import-Module PlatyPS
+Import-Module PlatyPS -ErrorAction Stop
 
-Update-MarkdownHelp -Module "$PSScriptRoot\..\__MODULE_NAME__.psd1" -OutputFolder "$PSScriptRoot\..\Docs" -Force
+# Ensure module is imported before updating docs
+Import-Module "$PSScriptRoot\..\__MODULE_NAME__.psd1" -Force
+
+Update-MarkdownHelp -Module __MODULE_NAME__ -OutputFolder "$PSScriptRoot\..\Docs" -Force
 '@
 
     # Replace placeholder with module name
@@ -54,5 +57,8 @@ Update-MarkdownHelp -Module "$PSScriptRoot\..\__MODULE_NAME__.psd1" -OutputFolde
 
     # Write the documentation update script
     $docScriptPath = Join-Path $scriptsDir 'Update-ModuleDocumentation.ps1'
-    Set-Content -Path $docScriptPath -Value $content -Encoding UTF8
+    Write-FileContent -Path $docScriptPath -Content $content -Name 'Documentation update script'
+
+    return $docScriptPath
 }
+

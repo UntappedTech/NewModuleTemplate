@@ -22,7 +22,7 @@ Describe "New-ModuleTemplate" {
         $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
         New-Item -ItemType Directory -Path $temp | Out-Null
 
-        New-ModuleTemplate -Name "TestModule" -Path $temp
+        New-ModuleTemplate -Name "TestModule" -ModulePath $temp
 
         { Import-Module "$temp\TestModule\TestModule.psd1" } | Should Not Throw
     }

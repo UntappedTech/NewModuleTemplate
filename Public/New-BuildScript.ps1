@@ -9,7 +9,7 @@
     - Regenerates PlatyPS documentation
     The script supports switches to skip individual steps.
 
-.PARAMETER BasePath
+.PARAMETER ModulePath
     The root directory of the module where the Scripts folder will be created.
 
 .PARAMETER Name
@@ -17,11 +17,11 @@
     status messages inside the generated build script.
 
 .EXAMPLE
-    New-BuildScript -BasePath "C:\Projects\MyModule" -Name "MyModule"
+    New-BuildScript -ModulePath "C:\Projects\MyModule" -Name "MyModule"
 
 .EXAMPLE
     $root = Join-Path $env:TEMP "TestModule"
-    New-BuildScript -BasePath $root -Name "TestModule"
+    New-BuildScript -ModulePath $root -Name "TestModule"
 
 .NOTES
     - The Analyzer folder is intentionally named "Analyzer".
@@ -31,19 +31,19 @@ function New-BuildScript {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [string]$BasePath,
+        [string]$ModulePath,
 
         [Parameter(Mandatory)]
         [string]$Name
     )
 
-    # Ensure the Scripts directory exists
-    $scriptsDir = Join-Path $BasePath 'Scripts'
-    if (-not (Test-Path $scriptsDir)) {
-        New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null
-    }
+    Write-Verbose "Creating build script for module '$Name'."
 
-    # Template for the build script
+    # Ensure Scripts directory exists
+    $scriptsDir = Join-Path $ModulePath 'Scripts'
+    Ensure-Directory -Path $scriptsDir -Name 'Scripts'
+
+    # Template for the build script (Write-Host removed, modern patterns used)
     $content = @'
 param(
     [switch]$SkipTests,
@@ -51,31 +51,37 @@ param(
     [switch]$SkipDocs
 )
 
-Write-Host "Building __MODULE__..."
+Write-Information "Building __MODULE__..."
 
 if (-not $SkipAnalyzer) {
-    Write-Host "Running PSScriptAnalyzer..."
+    Write-Information "Running PSScriptAnalyzer..."
     Invoke-ScriptAnalyzer -Path $PSScriptRoot -Settings "$PSScriptRoot\Analyzer\PSScriptAnalyzerSettings.psd1"
 }
 
 if (-not $SkipTests) {
-    Write-Host "Running Pester tests..."
-    Invoke-Pester -Path "$PSScriptRoot\Tests" -EnableExit
+    Write-Information "Running Pester tests..."
+    Invoke-Pester -Path "$PSScriptRoot\Tests"
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Pester tests failed."
+        exit $LASTEXITCODE
+    }
 }
 
 if (-not $SkipDocs) {
-    Write-Host "Updating PlatyPS docs..."
+    Write-Information "Updating PlatyPS docs..."
     Import-Module PlatyPS -ErrorAction Stop
-    New-MarkdownHelp -Module "$PSScriptRoot\__MODULE__.psd1" -OutputFolder "$PSScriptRoot\Docs" -Force
+    Import-Module "$PSScriptRoot\__MODULE__.psd1" -Force
+    New-MarkdownHelp -Module __MODULE__ -OutputFolder "$PSScriptRoot\Docs" -Force
 }
 
-Write-Host "Build complete."
+Write-Information "Build complete."
 '@
 
     # Replace placeholder with module name
     $content = $content.Replace('__MODULE__', $Name)
 
-    # Write the build script
+    # Write the build script using helper
     $buildScriptPath = Join-Path $scriptsDir 'build.ps1'
-    Set-Content -Path $buildScriptPath -Value $content -Encoding UTF8 -Force
+    
+    Write-FileContent -Path $buildScriptPath -Content $content -Name 'Build script'
 }

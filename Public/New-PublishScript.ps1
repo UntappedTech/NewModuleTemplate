@@ -7,18 +7,18 @@
     PowerShell repository (default: PSGallery). The script requires an API key
     and uses Publish-Module to push the module from its root directory.
 
-.PARAMETER BasePath
+.PARAMETER ModulePath
     The root directory of the module where the Scripts folder exists.
 
 .PARAMETER Name
     The name of the module. Used to populate placeholders inside the publish script.
 
 .EXAMPLE
-    New-PublishScript -BasePath "C:\Projects\MyModule" -Name "MyModule"
+    New-PublishScript -ModulePath "C:\Projects\MyModule" -Name "MyModule"
 
 .EXAMPLE
     $root = Join-Path $env:TEMP "TestModule"
-    New-PublishScript -BasePath $root -Name "TestModule"
+    New-PublishScript -ModulePath $root -Name "TestModule"
 
 .NOTES
     - The here-string is intentionally single-quoted.
@@ -29,13 +29,19 @@ function New-PublishScript {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [string]$BasePath,
+        [string]$ModulePath,
 
         [Parameter(Mandatory)]
         [string]$Name
     )
 
-    # Template for publish.ps1 (single-quoted, no escaping)
+    Write-Verbose "Creating publish script for module '$Name'."
+
+    # Ensure Scripts directory exists
+    $scriptsDir = Join-Path $ModulePath 'Scripts'
+    Ensure-Directory -Path $scriptsDir -Name 'Scripts'
+
+    # Template for publish.ps1
     $content = @'
 param(
     [Parameter(Mandatory)]
@@ -46,23 +52,19 @@ param(
 
 $modulePath = Split-Path -Parent $PSScriptRoot
 
-Write-Host "Publishing __MODULE__ from $modulePath to $Repository..."
+Write-Information "Publishing __MODULE__ from $modulePath to $Repository..."
 
 Publish-Module -Path $modulePath -Repository $Repository -NuGetApiKey $ApiKey
 
-Write-Host "Publish complete."
+Write-Information "Publish complete."
 '@
 
     # Replace placeholder with module name
     $content = $content.Replace('__MODULE__', $Name)
 
-    # Ensure Scripts directory exists
-    $scriptsDir = Join-Path $BasePath 'Scripts'
-    if (-not (Test-Path $scriptsDir)) {
-        New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null
-    }
-
     # Write publish.ps1
     $publishPath = Join-Path $scriptsDir 'publish.ps1'
-    Set-Content -Path $publishPath -Value $content -Encoding UTF8
+    Write-FileContent -Path $publishPath -Content $content -Name 'Publish script'
+
+    return $publishPath
 }

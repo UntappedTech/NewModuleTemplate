@@ -8,7 +8,7 @@
     entry using the provided version and notes. If the file does not exist,
     it is created. If it exists, the new entry is appended.
 
-.PARAMETER BasePath
+.PARAMETER ModulePath
     The root directory of the module where CHANGELOG.md will be created.
 
 .PARAMETER Version
@@ -20,11 +20,11 @@
     Defaults to "Initial release."
 
 .EXAMPLE
-    New-ModuleChangelog -BasePath "C:\Projects\MyModule" -Version "1.2.0" -Notes "Added new API endpoints"
+    New-ModuleChangelog -ModulePath "C:\Projects\MyModule" -Version "1.2.0" -Notes "Added new API endpoints"
 
 .EXAMPLE
     $root = Join-Path $env:TEMP "TestModule"
-    New-ModuleChangelog -BasePath $root -Version "0.1.0" -Notes "Prototype scaffolding"
+    New-ModuleChangelog -ModulePath $root -Version "0.1.0" -Notes "Prototype scaffolding"
 
 .NOTES
     - This function is typically invoked by New-ModuleTemplate.
@@ -34,7 +34,7 @@ function New-ModuleChangelog {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [string]$BasePath,
+        [string]$ModulePath,
 
         [Parameter()]
         [string]$Version = "1.0.0",
@@ -43,13 +43,13 @@ function New-ModuleChangelog {
         [string]$Notes = "Initial release."
     )
 
-    # Ensure the module root exists
-    if (-not (Test-Path $BasePath)) {
-        throw "The path '$BasePath' does not exist."
-    }
+    Write-Verbose "Creating changelog for module version '$Version'."
+
+    # Ensure module directory exists
+    Ensure-Directory -Path $ModulePath -Name 'Module root'
 
     # Path to the changelog file
-    $changelogPath = Join-Path $BasePath "CHANGELOG.md"
+    $changelogPath = Join-Path $ModulePath "CHANGELOG.md"
 
     # Build the changelog entry
     $date = (Get-Date).ToString("yyyy-MM-dd")
@@ -67,9 +67,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 "@
 
-    # Write the changelog file (overwrite or create)
-    Set-Content -Path $changelogPath -Value $content -Encoding UTF8
+    # Write the changelog file
+    Write-FileContent -Path $changelogPath -Content $content -Name 'Changelog'
 
-    # Return the path for convenience
     return $changelogPath
 }
+

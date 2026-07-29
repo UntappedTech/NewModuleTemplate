@@ -8,7 +8,7 @@
     and exports only the public ones. This ensures a clean separation between
     internal helpers and the module's public API.
 
-.PARAMETER BasePath
+.PARAMETER ModulePath
     The root directory of the module where the .psm1 file will be created.
 
 .PARAMETER Name
@@ -16,11 +16,11 @@
     inside the generated loader script.
 
 .EXAMPLE
-    New-ModuleLoader -BasePath "C:\Projects\MyModule" -Name "MyModule"
+    New-ModuleLoader -ModulePath "C:\Projects\MyModule" -Name "MyModule"
 
 .EXAMPLE
     $root = Join-Path $env:TEMP "TestModule"
-    New-ModuleLoader -BasePath $root -Name "TestModule"
+    New-ModuleLoader -ModulePath $root -Name "TestModule"
 
 .NOTES
     - The here-string is intentionally single-quoted.
@@ -31,16 +31,21 @@ function New-ModuleLoader {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [string]$BasePath,
+        [string]$ModulePath,
 
         [Parameter(Mandatory)]
         [string]$Name
     )
 
-    # Path to the .psm1 file
-    $loaderPath = Join-Path $BasePath "$Name.psm1"
+    Write-Verbose "Creating module loader for '$Name'."
 
-    # Template for the module loader (single-quoted, no escaping)
+    # Ensure module root exists
+    Ensure-Directory -Path $ModulePath -Name 'Module root'
+
+    # Path to the .psm1 file
+    $loaderPath = Join-Path $ModulePath "$Name.psm1"
+
+    # Template for the module loader
     $content = @'
 # Auto-generated module file for __MODULE__
 
@@ -70,7 +75,8 @@ Export-ModuleMember -Function $publicFunctions
     $content = $content.Replace('__MODULE__', $Name)
 
     # Write the loader file
-    Set-Content -Path $loaderPath -Value $content -Encoding UTF8
+    Write-FileContent -Path $loaderPath -Content $content -Name 'Module loader'
 
     return $loaderPath
 }
+

@@ -14,18 +14,18 @@
     The README is designed to be immediately useful for developers and users
     of the generated module.
 
-.PARAMETER BasePath
+.PARAMETER ModulePath
     The root directory of the module where README.md will be created.
 
 .PARAMETER Name
     The name of the module. Used to populate placeholders inside the README.
 
 .EXAMPLE
-    New-ModuleReadme -BasePath "C:\Projects\MyModule" -Name "MyModule"
+    New-ModuleReadme -ModulePath "C:\Projects\MyModule" -Name "MyModule"
 
 .EXAMPLE
     $root = Join-Path $env:TEMP "TestModule"
-    New-ModuleReadme -BasePath $root -Name "TestModule"
+    New-ModuleReadme -ModulePath $root -Name "TestModule"
 
 .NOTES
     - The here-string is intentionally single-quoted.
@@ -36,11 +36,16 @@ function New-ModuleReadme {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [string]$BasePath,
+        [string]$ModulePath,
 
         [Parameter(Mandatory)]
         [string]$Name
     )
+
+    Write-Verbose "Creating README.md for module '$Name'."
+
+    # Ensure module root exists
+    Ensure-Directory -Path $ModulePath -Name 'Module root'
 
     # Template for README.md
     $content = @'
@@ -150,6 +155,10 @@ MIT
     $content = $content.Replace('__MODULE_NAME__', $Name)
     $content = $content.Replace('__AUTHOR__', $env:USERNAME)
 
-    Set-Content -Path "$BasePath\README.md" -Value $content
+    # Write README.md
+    $readmePath = Join-Path $ModulePath 'README.md'
+    Write-FileContent -Path $readmePath -Content $content -Name 'README.md'
+
+    return $readmePath
 }
 

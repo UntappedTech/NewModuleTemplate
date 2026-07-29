@@ -8,20 +8,25 @@
     Scripts directories. The function returns the full path to the module's
     root folder.
 
-.PARAMETER BasePath
+.PARAMETER ModulePath
     The directory where the module folder will be created. The module root
-    becomes <BasePath>\<Name>.
+    becomes <ModulePath>\<Name>.
 
 .PARAMETER Name
     The name of the module. This becomes the root folder name and is used
     throughout the scaffolding process.
 
+.PARAMETER Minimal
+    Generates only the essential module directories:
+    - Public/Private folders
+    Skips tests, docs, analyzer settings, and scripts.
+    
 .EXAMPLE
-    New-ModuleFolders -BasePath "C:\Projects" -Name "MyModule"
+    New-ModuleFolders -ModulePath "C:\Projects" -Name "MyModule"
 
 .EXAMPLE
     $root = Join-Path $env:TEMP "TestModule"
-    New-ModuleFolders -BasePath $root -Name "Tools"
+    New-ModuleFolders -ModulePath $root -Name "Tools"
 
 .NOTES
     - This function is invoked internally by New-ModuleTemplate.
@@ -35,20 +40,29 @@ function New-ModuleFolders {
         [string]$Path,
 
         [Parameter(Mandatory)]
-        [string]$Name
+        [string]$Name,
+
+        [switch]$Minimal
     )
 
-    # Build the module root path: <BasePath>\<Name>
+    # Build the module root path: <Path>\<Name>
     $moduleRoot = Join-Path $Path $Name
 
     # Create the root folder
     New-Item -ItemType Directory -Path $moduleRoot -Force | Out-Null
 
-    # Create the standard module subfolders
-    foreach ($folder in 'Public', 'Private', 'Tests', 'Docs', 'Analyzer', 'Scripts') {
+    # Always create core folders
+    foreach ($folder in 'Public', 'Private') {
         New-Item -ItemType Directory -Path (Join-Path $moduleRoot $folder) -Force | Out-Null
     }
 
-    # Return the module root path for chaining
+    # Create full scaffolding folders only when not minimal
+    if (-not $Minimal) {
+        foreach ($folder in 'Tests', 'Docs', 'Analyzer', 'Scripts') {
+            New-Item -ItemType Directory -Path (Join-Path $moduleRoot $folder) -Force | Out-Null
+        }
+    }
+
     return $moduleRoot
 }
+

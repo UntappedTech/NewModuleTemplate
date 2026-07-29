@@ -9,18 +9,18 @@
     - Ensures at least one function is exported
     This provides a minimal but meaningful test suite for new modules.
 
-.PARAMETER BasePath
+.PARAMETER ModulePath
     The root directory of the module where the Tests folder exists.
 
 .PARAMETER Name
     The name of the module. Used to populate placeholders inside the test file.
 
 .EXAMPLE
-    New-PesterTests -BasePath "C:\Projects\MyModule" -Name "MyModule"
+    New-PesterTests -ModulePath "C:\Projects\MyModule" -Name "MyModule"
 
 .EXAMPLE
     $root = Join-Path $env:TEMP "TestModule"
-    New-PesterTests -BasePath $root -Name "TestModule"
+    New-PesterTests -ModulePath $root -Name "TestModule"
 
 .NOTES
     - The here-string is intentionally single-quoted.
@@ -31,14 +31,20 @@ function New-PesterTests {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [string]$BasePath,
+        [string]$ModulePath,
 
         [Parameter(Mandatory)]
         [string]$Name
     )
 
-    # Template for the Pester test file (single-quoted, no escaping)
-    $test = @'
+    Write-Verbose "Creating Pester tests for module '$Name'."
+
+    # Ensure Tests directory exists
+    $testsDir = Join-Path $ModulePath 'Tests'
+    Ensure-Directory -Path $testsDir -Name 'Tests'
+
+    # Template for the Pester test file
+    $content = @'
 Describe "__MODULE__ Module" {
 
     BeforeAll {
@@ -56,11 +62,14 @@ Describe "__MODULE__ Module" {
 '@
 
     # Replace placeholder with module name
-    $test = $test.Replace('__MODULE__', $Name)
+    $content = $content.Replace('__MODULE__', $Name)
 
     # Path to the test file
-    $testPath = Join-Path $BasePath "Tests\$Name.Tests.ps1"
+    $testPath = Join-Path $testsDir "$Name.Tests.ps1"
 
     # Write the test file
-    Set-Content -Path $testPath -Value $test -Encoding UTF8 -Force
+    Write-FileContent -Path $testPath -Content $content -Name 'Pester test file'
+
+    return $testPath
 }
+

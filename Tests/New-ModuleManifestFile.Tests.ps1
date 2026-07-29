@@ -4,7 +4,7 @@ Describe "New-ModuleManifestFile" {
         $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString()) "TestModule"
         New-Item -ItemType Directory -Path $temp | Out-Null
 
-        New-ModuleManifestFile -Name "TestModule" -BasePath $temp
+        New-ModuleManifestFile -Name "TestModule" -ModulePath $temp
 
         $manifestPath = "$temp\TestModule.psd1"
         Test-Path $manifestPath | Should Be $true

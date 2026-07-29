@@ -4,7 +4,7 @@ Describe "New-ModuleChangelog" {
         $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
         New-Item -ItemType Directory -Path $temp | Out-Null
 
-        $result = New-ModuleChangelog -BasePath $temp -Version "1.0.0"
+        $result = New-ModuleChangelog -ModulePath $temp -Version "1.0.0"
 
         Test-Path $result | Should Be $true
     }
@@ -13,7 +13,7 @@ Describe "New-ModuleChangelog" {
         $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
         New-Item -ItemType Directory -Path $temp | Out-Null
 
-        $result = New-ModuleChangelog -BasePath $temp -Version "0.1.0"
+        $result = New-ModuleChangelog -ModulePath $temp -Version "0.1.0"
 
         $content = Get-Content $result -Raw
         $content | Should Match "0.1.0"
@@ -23,7 +23,7 @@ Describe "New-ModuleChangelog" {
         $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
         New-Item -ItemType Directory -Path $temp | Out-Null
 
-        $result = New-ModuleChangelog -BasePath $temp -Version "1.0.0" -Notes "Testing notes"
+        $result = New-ModuleChangelog -ModulePath $temp -Version "1.0.0" -Notes "Testing notes"
 
         $content = Get-Content $result -Raw
         $content | Should Match "Testing notes"

@@ -8,7 +8,7 @@
     and a newly generated GUID. The manifest is written to the module root as
     <Name>.psd1.
 
-.PARAMETER BasePath
+.PARAMETER ModulePath
     The root directory of the module where the manifest file will be created.
 
 .PARAMETER Name
@@ -16,11 +16,11 @@
     RootModule entry inside the manifest.
 
 .EXAMPLE
-    New-ModuleManifestFile -BasePath "C:\Projects\MyModule" -Name "MyModule"
+    New-ModuleManifestFile -ModulePath "C:\Projects\MyModule" -Name "MyModule"
 
 .EXAMPLE
     $root = Join-Path $env:TEMP "TestModule"
-    New-ModuleManifestFile -BasePath $root -Name "TestModule"
+    New-ModuleManifestFile -ModulePath $root -Name "TestModule"
 
 .NOTES
     - The manifest is created using New-ModuleManifest.
@@ -30,17 +30,22 @@ function New-ModuleManifestFile {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [string]$BasePath,
+        [string]$ModulePath,
 
         [Parameter(Mandatory)]
         [string]$Name
     )
 
+    Write-Verbose "Creating module manifest for '$Name'."
+
+    # Ensure module root exists
+    Ensure-Directory -Path $ModulePath -Name 'Module root'
+
     # Generate a unique GUID for the module manifest
     $guid = [guid]::NewGuid().ToString()
 
     # Path to the manifest file
-    $manifestPath = Join-Path $BasePath "$Name.psd1"
+    $manifestPath = Join-Path $ModulePath "$Name.psd1"
 
     # Create the module manifest
     New-ModuleManifest -Path $manifestPath `
@@ -53,4 +58,9 @@ function New-ModuleManifestFile {
         -AliasesToExport @() `
         -CompatiblePSEditions @('Core', 'Desktop') `
         -PowerShellVersion '5.1' | Out-Null
+
+    Write-Information "Module manifest created at '$manifestPath'."
+
+    return $manifestPath
 }
+

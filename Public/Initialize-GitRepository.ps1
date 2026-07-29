@@ -7,16 +7,16 @@
     and performs an initial commit. This function is used by New-ModuleTemplate
     when the -InitGit switch is provided.
 
-.PARAMETER BasePath
+.PARAMETER ModulePath
     The root directory of the module where the Git repository should be created.
     This must be the module's top-level folder (e.g., C:\Projects\MyModule).
 
 .EXAMPLE
-    Initialize-GitRepository -BasePath "C:\Projects\MyModule"
+    Initialize-GitRepository -ModulePath "C:\Projects\MyModule"
 
 .EXAMPLE
     $root = "C:\Modules\Tools"
-    Initialize-GitRepository -BasePath $root
+    Initialize-GitRepository -ModulePath $root
 
 .NOTES
     - Requires Git to be installed and available in PATH.
@@ -26,37 +26,100 @@ function Initialize-GitRepository {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [string]$BasePath
+        [string]$ModulePath
     )
 
-    # Create a standard .gitignore file for PowerShell modules
+    Write-Verbose "Initializing Git repository in '$ModulePath'."
+
+    # Check for Git
+    $git = Get-Command git -ErrorAction SilentlyContinue
+    if (-not $git) {
+        Write-Warning "Git is not installed or not on PATH. Skipping repository initialization."
+        return
+    }
+
+    Write-Debug "Git detected at: $($git.Source)"
+
+    # Write .gitignore
+    Write-Verbose "Writing .gitignore file."
+    $gitignorePath = Join-Path $ModulePath '.gitignore'
+
     $gitignore = @'
-## Build artifacts
-bin/
-obj/
+# Ignore PowerShell module build output
+*.ps1xml
+*.cdxml
+*.xsd
 
-# VSCode
+# Ignore compiled help files
+*.dll
+*.exe
+*.pdb
+
+# Ignore NuGet/PSGallery package files
+*.nupkg
+*.zip
+
+# Ignore temporary files
+*.tmp
+*.log
+*.bak
+*.swp
+*.swo
+
+# Ignore VS Code settings and workspace files
 .vscode/
+.history/
 
-# PlatyPS temp files
+# Ignore PlatyPS temp files
 Docs/*.xml
 
-# PowerShellGet publish cache
-*.nupkg
+# Ignore PowerShellGet cache
+PSGetModuleInfo.xml
 
-# Logs
-*.log
+# Ignore build output folders
+bin/
+obj/
+out/
+Release/
+Debug/
+
+# Ignore test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
 '@
 
-    # Write .gitignore to the module root
-    Set-Content -Path "$BasePath\.gitignore" -Value $gitignore -Encoding UTF8
+    Set-Content -Path $gitignorePath -Value $gitignore -Encoding UTF8
 
-    # Initialize the Git repository inside the module folder
-    Push-Location $BasePath
+    # Initialize repository
+    Write-Verbose "Running 'git init' inside '$ModulePath'."
+    Push-Location $ModulePath
     git init | Out-Null
     Pop-Location
 
-    # Stage all files and create the initial commit
-    git -C $BasePath add . | Out-Null
-    git -C $BasePath commit -m "Initial commit" | Out-Null
+    # Stage files
+    Write-Verbose "Staging initial files."
+    git -C $ModulePath add . | Out-Null
+
+    # Commit
+    Write-Verbose "Creating initial commit."
+    git -C $ModulePath commit -m "Initial commit" | Out-Null
+
+    Write-Information "Git repository initialized successfully in '$ModulePath'."
+
+    return $gitignorePath
 }
