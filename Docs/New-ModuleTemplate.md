@@ -1,0 +1,254 @@
+---
+external help file: NewModuleTemplate-help.xml
+Module Name: NewModuleTemplate
+online version:
+schema: 2.0.0
+---
+
+# New-ModuleTemplate
+
+## SYNOPSIS
+Creates a full or minimal PowerShell module project scaffold.
+
+## SYNTAX
+
+```
+New-ModuleTemplate [-Path] <String> [-Name] <String> [-Minimal] [-Force] [-NoGit] [-NoTests] [-NoDocs]
+ [-NoAnalyzer] [-NoScripts] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+## DESCRIPTION
+Generates a complete, professional PowerShell module structure including:
+- Public and Private function folders
+- Optional Tests folder with Pester scaffolding
+- Optional Docs folder for PlatyPS help
+- Optional Analyzer folder with PSScriptAnalyzer settings
+- Optional Scripts folder containing build/publish/documentation scripts
+- Module manifest and loader (.psd1 / .psm1)
+- Optional Git initialization
+
+The default behavior creates a full module scaffold.
+Switches allow disabling
+individual components or generating a minimal template.
+
+## EXAMPLES
+
+### EXAMPLE 1
+```
+New-ModuleTemplate -Path "C:\Projects" -Name "MyModule"
+```
+
+### EXAMPLE 2
+```
+New-ModuleTemplate -Path "C:\Projects" -Name "MyModule" -Minimal
+```
+
+### EXAMPLE 3
+```
+New-ModuleTemplate -Path "C:\Projects" -Name "MyModule" -Force
+```
+
+## PARAMETERS
+
+### -Path
+The directory where the module folder will be created.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Name
+The name of the module.
+Used for folder creation, manifest generation,
+documentation, and all scaffolding components.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Minimal
+Generates only the essential module components:
+- Public/Private folders
+- Manifest
+- Loader
+- README
+- Changelog
+Skips tests, docs, analyzer settings, and scripts.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+Overwrites an existing module folder if it already exists.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoGit
+Disables Git initialization even if -InitGit is specified.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoTests
+Skips generating Pester test scaffolding.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoDocs
+Skips generating PlatyPS documentation scripts and Docs folder.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoAnalyzer
+Skips generating PSScriptAnalyzer settings.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoScripts
+Skips generating build, publish, and documentation scripts.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+This is the orchestrator for all scaffolding functions.
+Folder creation is handled by New-ModuleFolders.
+The module loader is generated by New-ModuleLoader.
+
+## RELATED LINKS

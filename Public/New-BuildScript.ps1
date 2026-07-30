@@ -52,15 +52,16 @@ param(
 )
 
 Write-Information "Building __MODULE__..."
+Import-Module "$PSScriptRoot\..\" -Force
 
 if (-not $SkipAnalyzer) {
     Write-Information "Running PSScriptAnalyzer..."
-    Invoke-ScriptAnalyzer -Path $PSScriptRoot -Settings "$PSScriptRoot\Analyzer\PSScriptAnalyzerSettings.psd1"
+    Invoke-ScriptAnalyzer -Path $PSScriptRoot -Settings "$PSScriptRoot\..\Analyzer\PSScriptAnalyzerSettings.psd1"
 }
 
 if (-not $SkipTests) {
     Write-Information "Running Pester tests..."
-    Invoke-Pester -Path "$PSScriptRoot\Tests"
+    Invoke-Pester -Path "$PSScriptRoot\..\Tests"
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Pester tests failed."
         exit $LASTEXITCODE
@@ -70,8 +71,8 @@ if (-not $SkipTests) {
 if (-not $SkipDocs) {
     Write-Information "Updating PlatyPS docs..."
     Import-Module PlatyPS -ErrorAction Stop
-    Import-Module "$PSScriptRoot\__MODULE__.psd1" -Force
-    New-MarkdownHelp -Module __MODULE__ -OutputFolder "$PSScriptRoot\Docs" -Force
+
+    New-MarkdownHelp -Module __MODULE__ -OutputFolder "$PSScriptRoot\..\Docs\" -WithModulePage -Force
 }
 
 Write-Information "Build complete."

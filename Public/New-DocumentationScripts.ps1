@@ -49,7 +49,7 @@ Import-Module PlatyPS -ErrorAction Stop
 # Ensure module is imported before updating docs
 Import-Module "$PSScriptRoot\..\__MODULE_NAME__.psd1" -Force
 
-Update-MarkdownHelp -Module __MODULE_NAME__ -OutputFolder "$PSScriptRoot\..\Docs" -Force
+New-MarkdownHelp -Module __MODULE_NAME__ -OutputFolder "$PSScriptRoot\..\Docs\" -WithModulePage -Force
 '@
 
     # Replace placeholder with module name

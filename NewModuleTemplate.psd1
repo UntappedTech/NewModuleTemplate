@@ -35,12 +35,12 @@
             Tags         = @('PowerShell', 'Module', 'Scaffolding', 'Generator', 'Template')
             LicenseUri   = 'https://opensource.org/licenses/MIT'
             ProjectUri   = 'https://github.com/UntappedTech/NewModuleTemplate'
-            IconUri      = 'https://raw.githubusercontent.com/UntappedTech/NewModuleTemplate/main/assets/icon.svg'
+            IconUri      = 'https://raw.githubusercontent.com/UntappedTech/NewModuleTemplate/main/icon.svg'
             ReleaseNotes = 'Initial release.'
         }
     }
     
-    RequiredModules      = @('Pester')
+    RequiredModules      = @()
     Copyright            = 'Copyright (c) 2026 Kael'
     
 }

@@ -5,6 +5,8 @@ param(
     [string]$Repository = 'PSGallery'
 )
 
+$InformationPreference = 'Continue'
+
 $modulePath = Split-Path -Parent $PSScriptRoot
 
 Write-Information "Publishing NewModuleTemplate from $modulePath to $Repository..."

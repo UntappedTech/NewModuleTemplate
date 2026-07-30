@@ -22,4 +22,4 @@ jobs:
 
             - name: Run build
               shell: pwsh
-              run: pwsh ./build.ps1
+              run: pwsh ./Scripts/build.ps1

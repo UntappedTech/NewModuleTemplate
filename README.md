@@ -24,6 +24,19 @@ Creates complete, production‑ready module structures with tests, documentation
 
 ---
 
+## 🧰 Optional Developer Tools
+
+The scaffolder can generate files that integrate with the following tools:
+
+- **Pester** – for running tests  
+- **PlatyPS** – for generating documentation  
+- **PSScriptAnalyzer** – for linting and best practices  
+
+These tools are not required for the module to function, and are not included when using `-Minimal`.
+
+
+---
+
 ## 📚 Documentation
 
 This module includes PlatyPS‑generated Markdown help (full mode only).
