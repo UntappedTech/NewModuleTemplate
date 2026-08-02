@@ -48,7 +48,7 @@
     }
     
     RequiredModules      = @()
-    Copyright            = 'Copyright (c) 2026 Kael'
+    Copyright            = 'Copyright (c) 2026 Kael Sterling'
     
 }
 

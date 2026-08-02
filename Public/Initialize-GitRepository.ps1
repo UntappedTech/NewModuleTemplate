@@ -40,7 +40,9 @@ function Initialize-GitRepository {
 
     Write-Debug "Git detected at: $($git.Source)"
 
+    #
     # Write .gitignore
+    #
     Write-Verbose "Writing .gitignore file."
     $gitignorePath = Join-Path $ModulePath '.gitignore'
 
@@ -100,22 +102,44 @@ desktop.ini
 *.suo
 *.userosscache
 *.sln.docstates
-
 '@
 
     Set-Content -Path $gitignorePath -Value $gitignore -Encoding UTF8
 
+    #
+    # Write .gitattributes (silences CRLF/LF warnings)
+    #
+    Write-Verbose "Writing .gitattributes file."
+    $gitattributesPath = Join-Path $ModulePath '.gitattributes'
+
+    $gitattributes = @'
+# Normalize line endings for all text files
+* text=auto eol=lf
+
+# Explicit normalization for PowerShell-related files
+*.ps1 text eol=lf
+*.psm1 text eol=lf
+*.psd1 text eol=lf
+*.md  text eol=lf
+'@
+
+    Set-Content -Path $gitattributesPath -Value $gitattributes -Encoding UTF8
+
+    #
     # Initialize repository
+    #
     Write-Verbose "Running 'git init' inside '$ModulePath'."
     Push-Location $ModulePath
     git init | Out-Null
     Pop-Location
 
-    # Stage files
-    Write-Verbose "Staging initial files."
-    git -C $ModulePath add . | Out-Null
+    # Apply .gitattributes normalization immediately
+    Write-Verbose "Applying .gitattributes normalization."
+    git -C $ModulePath add --renormalize . | Out-Null
 
+    #
     # Commit
+    #
     Write-Verbose "Creating initial commit."
     git -C $ModulePath commit -m "Initial commit" | Out-Null
 

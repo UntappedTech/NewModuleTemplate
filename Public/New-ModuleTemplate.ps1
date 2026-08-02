@@ -84,7 +84,9 @@ function New-ModuleTemplate {
     $moduleRootPath = Join-Path $Path $Name
 
     # Handle -Force overwrite
-    if (Test-Path $moduleRootPath -and -not $Force) {
+    $moduleExists = Test-Path $moduleRootPath
+    if ($moduleExists -and -not $Force) {
+
         throw "Module path '$moduleRootPath' already exists. Use -Force to overwrite."
     }
 
