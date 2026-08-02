@@ -1,6 +1,4 @@
-<img src="icon.svg" alt="NewModuleTemplate Icon" width="160" align="right">
-
-# NewModuleTemplate
+# NewModuleTemplate <img src="icon.svg" alt="NewModuleTemplate Icon" width="160" align="right">
 
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/NewModuleTemplate.svg?style=flat-square)](https://www.powershellgallery.com/packages/NewModuleTemplate)
 
