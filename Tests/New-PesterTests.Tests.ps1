@@ -1,5 +1,4 @@
 # Requires -Module Pester
-
 Describe "New-PesterTests" {
 
     BeforeAll {

@@ -1,32 +1,46 @@
 # Requires -Module Pester
 Describe "New-ModuleChangelog" {
 
-    It "Creates a CHANGELOG.md file" {
-        $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
-        New-Item -ItemType Directory -Path $temp | Out-Null
-
-        $result = New-ModuleChangelog -ModulePath $temp -Version "1.0.0"
-
-        Test-Path $result | Should Be $true
+    BeforeAll {
+        $moduleRoot = Join-Path $PSScriptRoot '..' | Resolve-Path
+        $manifest = Join-Path $moduleRoot 'NewModuleTemplate.psd1'
+        Import-Module $manifest -Force
     }
 
-    It "Populates the changelog with correct version" {
-        $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
-        New-Item -ItemType Directory -Path $temp | Out-Null
+    BeforeEach {
+        $guid = [guid]::NewGuid().ToString()
+        $root = Join-Path $env:TEMP $guid
 
-        $result = New-ModuleChangelog -ModulePath $temp -Version "0.1.0"
+        New-Item -ItemType Directory -Path $root | Out-Null
 
-        $content = Get-Content $result -Raw
-        $content | Should Match "0.1.0"
+        Set-Variable -Name TempRoot -Value $root -Scope Local
     }
 
-    It "Includes the provided notes" {
-        $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
-        New-Item -ItemType Directory -Path $temp | Out-Null
+    It "Includes the correct version and notes" {
+        $version = "2.5.0"
+        $notes = "Added new API endpoints."
 
-        $result = New-ModuleChangelog -ModulePath $temp -Version "1.0.0" -Notes "Testing notes"
+        $path = New-ModuleChangelog -ModulePath $TempRoot -Version $version -Notes $notes
+        $lines = Get-Content $path
 
-        $content = Get-Content $result -Raw
-        $content | Should Match "Testing notes"
+        $date = (Get-Date).ToString("yyyy-MM-dd")
+
+        $lines | Should -Contain "## [$version] - $date"
+        $lines | Should -Contain "### Added"
+        $lines | Should -Contain "- $notes"
+    }
+
+    It "Is idempotent and overwrites the file cleanly" {
+        New-ModuleChangelog -ModulePath $TempRoot -Version "1.0.0" -Notes "Initial"
+
+        {
+            New-ModuleChangelog -ModulePath $TempRoot -Version "1.0.1" -Notes "Second release"
+        } | Should -Not -Throw
+
+        $lines = Get-Content (Join-Path $TempRoot "CHANGELOG.md")
+        $date = (Get-Date).ToString("yyyy-MM-dd")
+
+        $lines | Should -Contain "## [1.0.1] - $date"
+        $lines | Should -Contain "- Second release"
     }
 }
