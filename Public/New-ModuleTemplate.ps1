@@ -91,7 +91,15 @@ function New-ModuleTemplate {
     }
 
     # Create folder structure
-    $moduleroot = New-ModuleFolders -Path $Path -Name $Name -Minimal:$Minimal
+    $moduleroot = New-ModuleFolders `
+        -Path $Path `
+        -Name $Name `
+        -Minimal:$Minimal `
+        -NoTests:$NoTests `
+        -NoDocs:$NoDocs `
+        -NoAnalyzer:$NoAnalyzer `
+        -NoScripts:$NoScripts
+
 
     # Always generate core module components
     New-ModuleManifestFile -ModulePath $moduleroot -Name $Name

@@ -66,6 +66,25 @@ Describe "New-ModuleFolders" {
         Test-Path "$modulePath\Private" | Should -Be $true
     }
 
+    It "Respects NoTests, NoDocs, NoAnalyzer, and NoScripts switches" {
+        $modulePath = New-ModuleFolders `
+            -Path $TempRoot `
+            -Name "SwitchModule" `
+            -NoTests `
+            -NoDocs `
+            -NoAnalyzer `
+            -NoScripts
+
+        Test-Path "$modulePath\Tests"    | Should -Be $false
+        Test-Path "$modulePath\Docs"     | Should -Be $false
+        Test-Path "$modulePath\Analyzer" | Should -Be $false
+        Test-Path "$modulePath\Scripts"  | Should -Be $false
+
+        # Core folders still exist
+        Test-Path "$modulePath\Public"  | Should -Be $true
+        Test-Path "$modulePath\Private" | Should -Be $true
+    }
+
     It "Returns the correct module root path" {
         $modulePath = New-ModuleFolders -Path $TempRoot -Name "TestModule"
 

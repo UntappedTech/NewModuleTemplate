@@ -4,7 +4,7 @@
 
 @{
     RootModule           = 'NewModuleTemplate.psm1'
-    ModuleVersion        = '1.0.0'
+    ModuleVersion        = '1.1.0'
     GUID                 = 'cd7818d1-6b04-4bb5-a644-3a28e7d6db77'
     Author               = 'Kael Sterling'
     CompanyName          = 'Untapped Technologies'

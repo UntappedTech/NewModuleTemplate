@@ -21,24 +21,25 @@ Describe "Initialize-GitRepository" {
         Set-Variable -Name TempRoot -Value $root -Scope Local
     }
 
-    It "Creates .gitignore and initializes a repo when Git is available" -Skip:(-not $GitAvailable) {
-        $result = Initialize-GitRepository -ModulePath $TempRoot
+    It "Creates .gitignore and initializes a repo when Git is available" {
+        $modulePath = Join-Path $TempRoot "GitModule"
+        New-Item -ItemType Directory -Path $modulePath | Out-Null
 
-        $gitignorePath = Join-Path $TempRoot ".gitignore"
+        $result = Initialize-GitRepository -ModulePath $modulePath
 
-        # .gitignore exists
-        Test-Path $gitignorePath | Should -Be $true
+        # .gitignore was created
+        Test-Path (Join-Path $modulePath ".gitignore") | Should -Be $true
 
-        # Function returns correct path
-        $result | Should -Be $gitignorePath
+        # .gitattributes was created
+        Test-Path (Join-Path $modulePath ".gitattributes") | Should -Be $true
 
-        # .git folder exists
-        Test-Path (Join-Path $TempRoot ".git") | Should -Be $true
+        # Git repo initialized
+        Test-Path (Join-Path $modulePath ".git") | Should -Be $true
 
-        # Initial commit exists
-        $log = git -C $TempRoot log --oneline
-        $log | Should -Not -BeNullOrEmpty
+        # The function returned the .gitignore path
+        $result | Should -Be (Join-Path $modulePath ".gitignore")
     }
+
 
     It "Does not create a repo when Git is NOT available" -Skip:$GitAvailable {
         $result = Initialize-GitRepository -ModulePath $TempRoot

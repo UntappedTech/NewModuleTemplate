@@ -42,13 +42,16 @@ function New-ModuleFolders {
         [Parameter(Mandatory)]
         [string]$Name,
 
-        [switch]$Minimal
+        [switch]$Minimal,
+        [switch]$NoTests,
+        [switch]$NoDocs,
+        [switch]$NoAnalyzer,
+        [switch]$NoScripts
     )
 
-    # Build the module root path: <Path>\<Name>
     $moduleRoot = Join-Path $Path $Name
 
-    # Create the root folder
+    # Create root
     New-Item -ItemType Directory -Path $moduleRoot -Force | Out-Null
 
     # Always create core folders
@@ -56,13 +59,27 @@ function New-ModuleFolders {
         New-Item -ItemType Directory -Path (Join-Path $moduleRoot $folder) -Force | Out-Null
     }
 
-    # Create full scaffolding folders only when not minimal
+    # Full scaffolding only when not minimal
     if (-not $Minimal) {
-        foreach ($folder in 'Tests', 'Docs', 'Analyzer', 'Scripts') {
-            New-Item -ItemType Directory -Path (Join-Path $moduleRoot $folder) -Force | Out-Null
+
+        if (-not $NoTests) {
+            New-Item -ItemType Directory -Path (Join-Path $moduleRoot 'Tests') -Force | Out-Null
+        }
+
+        if (-not $NoDocs) {
+            New-Item -ItemType Directory -Path (Join-Path $moduleRoot 'Docs') -Force | Out-Null
+        }
+
+        if (-not $NoAnalyzer) {
+            New-Item -ItemType Directory -Path (Join-Path $moduleRoot 'Analyzer') -Force | Out-Null
+        }
+
+        if (-not $NoScripts) {
+            New-Item -ItemType Directory -Path (Join-Path $moduleRoot 'Scripts') -Force | Out-Null
         }
     }
 
     return $moduleRoot
 }
+
 

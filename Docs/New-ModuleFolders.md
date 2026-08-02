@@ -13,8 +13,8 @@ Creates the folder structure for a new PowerShell module.
 ## SYNTAX
 
 ```
-New-ModuleFolders [-Path] <String> [-Name] <String> [-Minimal] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+New-ModuleFolders [-Path] <String> [-Name] <String> [-Minimal] [-NoTests] [-NoDocs] [-NoAnalyzer] [-NoScripts]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -76,6 +76,66 @@ Accept wildcard characters: False
 Generates only the essential module directories:
 - Public/Private folders
 Skips tests, docs, analyzer settings, and scripts.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoTests
+{{ Fill NoTests Description }}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoDocs
+{{ Fill NoDocs Description }}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoAnalyzer
+{{ Fill NoAnalyzer Description }}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoScripts
+{{ Fill NoScripts Description }}
 
 ```yaml
 Type: SwitchParameter
