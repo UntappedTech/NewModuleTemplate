@@ -45,14 +45,16 @@ function New-PesterTests {
 
     # Template for the Pester test file
     $content = @'
+@ Requires -Module Pester    
 Describe "__MODULE__ Module" {
 
     BeforeAll {
-        Import-Module "$PSScriptRoot/../__MODULE__.psd1" -Force
+        $manifest = Join-Path $PSScriptRoot '..' '__MODULE__.psd1'
+        Import-Module $manifest -Force
     }
 
     It "Loads without error" {
-        { Import-Module "__MODULE__" -Force } | Should -Not -Throw
+        { Import-Module $manifest -Force } | Should -Not -Throw
     }
 
     It "Exports at least one function" {

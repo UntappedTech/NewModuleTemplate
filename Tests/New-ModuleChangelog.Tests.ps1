@@ -1,3 +1,4 @@
+# Requires -Module Pester
 Describe "New-ModuleChangelog" {
 
     It "Creates a CHANGELOG.md file" {

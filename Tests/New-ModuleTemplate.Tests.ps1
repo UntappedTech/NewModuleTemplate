@@ -1,5 +1,13 @@
+# Requires -Module Pester
 Describe "New-ModuleTemplate" {
 
+    BeforeAll {
+        # Import the module under test
+        $moduleRoot = Join-Path $PSScriptRoot '..' | Resolve-Path
+        $manifest = Join-Path $moduleRoot 'NewModuleTemplate.psd1'
+        Import-Module $manifest -Force
+    }
+    
     It "Creates the correct folder structure" {
         $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
         New-Item -ItemType Directory -Path $temp | Out-Null

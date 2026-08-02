@@ -1,3 +1,4 @@
+# Requires -Module Pester
 Describe "New-ModulePsm1" {
 
     It "Creates a .psm1 file" {

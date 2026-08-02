@@ -1,3 +1,4 @@
+# Requires -Module Pester
 Describe "New-AnalyzerSettings" {
 
     It "Creates analyzer settings file" {

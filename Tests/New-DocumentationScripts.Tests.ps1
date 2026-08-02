@@ -1,3 +1,4 @@
+# Requires -Module Pester
 Describe "New-DocumentationScripts" {
 
     It "Creates documentation scripts" {

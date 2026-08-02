@@ -1,3 +1,4 @@
+# Requires -Module Pester
 Describe "New-ModuleFolders" {
 
     It "Creates expected folders" {

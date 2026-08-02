@@ -1,3 +1,4 @@
+# Requires -Module Pester
 Describe "Initialize-GitRepository" {
 
     It "Initializes a git repository" {

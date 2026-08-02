@@ -1,7 +1,8 @@
+# Requires -Module Pester
 Describe "New-ModuleManifestFile" {
 
     It "Creates a valid manifest" {
-        $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString()) "TestModule"
+        $temp = Join-Path $env:TEMP ([guid]::NewGuid().ToString()) + "TestModule"
         New-Item -ItemType Directory -Path $temp | Out-Null
 
         New-ModuleManifestFile -Name "TestModule" -ModulePath $temp
