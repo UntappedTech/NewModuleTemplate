@@ -57,7 +57,13 @@ function New-ModuleManifestFile {
         -FunctionsToExport @() `
         -AliasesToExport @() `
         -CompatiblePSEditions @('Core', 'Desktop') `
-        -PowerShellVersion '5.1' | Out-Null
+        -PowerShellVersion '5.1' `
+        -FileList @(
+        "$Name.psm1",
+        "$Name.psd1",
+        "Public",
+        "Private"
+    ) | Out-Null
 
     Write-Information "Module manifest created at '$manifestPath'."
 

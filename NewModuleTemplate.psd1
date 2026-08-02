@@ -27,6 +27,13 @@
         'New-PesterTests',
         'New-PublishScript'
     )
+    FileList             = @(
+        'NewModuleTemplate.psm1',
+        'NewModuleTemplate.psd1',
+        'Public',
+        'Private'
+    )
+
     AliasesToExport      = @()
     CmdletsToExport      = @()
     DscResourcesToExport = @()

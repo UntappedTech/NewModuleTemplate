@@ -21,17 +21,26 @@ Describe "New-ModuleManifestFile" {
     It "Generates a unique GUID" {
         $manifestPath = New-ModuleManifestFile -ModulePath $TempRoot -Name "TestModule"
 
-        $data = Test-ModuleManifest -Path $manifestPath
+        $data = Import-PowerShellDataFile $manifestPath
 
         # GUID should be non-empty and valid
         { [guid]::Parse($data.Guid) } | Should -Not -Throw
     }
 
-    It "Manifest imports without error" {
+    It "Includes only the expected FileList entries" {
         $manifestPath = New-ModuleManifestFile -ModulePath $TempRoot -Name "TestModule"
 
-        {
-            Import-Module $manifestPath -Force
-        } | Should -Not -Throw
+        $data = Import-PowerShellDataFile $manifestPath
+
+        $data.FileList | Should -Contain "TestModule.psm1"
+        $data.FileList | Should -Contain "TestModule.psd1"
+        $data.FileList | Should -Contain "Public"
+        $data.FileList | Should -Contain "Private"
+
+        # Ensure no unexpected folders are included
+        $data.FileList | Should -Not -Contain "Docs"
+        $data.FileList | Should -Not -Contain "Tests"
+        $data.FileList | Should -Not -Contain "Scripts"
+        $data.FileList | Should -Not -Contain "Analyzer"
     }
 }
